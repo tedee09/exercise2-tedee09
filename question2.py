@@ -1,4 +1,5 @@
 import numpy as np
+from question1 import get_DH_table
 
 def get_pos():
     dh_table = get_DH_table()
