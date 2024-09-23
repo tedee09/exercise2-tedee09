@@ -1,7 +1,7 @@
 import numpy as np
 
 def get_pos():
-    dh_table = get_DH_table()  # Reuse the DH table from question1
+    dh_table = get_DH_table()
     
     pos = np.zeros(3)
     
@@ -9,9 +9,10 @@ def get_pos():
         theta = dh_table[i][0]
         d = dh_table[i][1]
         a = dh_table[i][2]
+        alpha = dh_table[i][3]
         
         pos[0] += a * np.cos(theta)  
         pos[1] += a * np.sin(theta)  
-        pos[2] += d                 
+        pos[2] += d                  
 
     return pos
