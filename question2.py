@@ -1,24 +1,17 @@
 import numpy as np
-from question1 import get_DH_table 
-
-def dh_transform(theta, d, a, alpha):
-    return np.array([
-        [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
-        [np.sin(theta), np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
-        [0, np.sin(alpha), np.cos(alpha), d],
-        [0, 0, 0, 1]
-    ])
 
 def get_pos():
-    dh = get_DH_table()
+    dh_table = get_DH_table()  # Reuse the DH table from question1
     
-    T_final = np.eye(4)
-
-    for joint in dh:
-        theta, d, a, alpha = joint
-        T = dh_transform(theta, d, a, alpha)
-        T_final = np.dot(T_final, T)
-
-    pos = T_final[:3, 3]
+    pos = np.zeros(3)
     
+    for i in range(dh_table.shape[0]):
+        theta = dh_table[i][0]
+        d = dh_table[i][1]
+        a = dh_table[i][2]
+        
+        pos[0] += a * np.cos(theta)  
+        pos[1] += a * np.sin(theta)  
+        pos[2] += d                 
+
     return pos
