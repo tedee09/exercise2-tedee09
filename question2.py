@@ -1,23 +1,31 @@
 import numpy as np
-from question1 import get_DH_table
+from question1 import get_DH_table  # Import DH table from question1.py
+
+def dh_transform(theta, d, a, alpha):
+    """
+    This function returns the transformation matrix based on the DH parameters.
+    """
+    return np.array([
+        [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+        [np.sin(theta), np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+        [0, np.sin(alpha), np.cos(alpha), d],
+        [0, 0, 0, 1]
+    ])
 
 def get_pos():
-    # Get DH table from question1
-    dh_table = get_DH_table()
+    # Get the DH table from question1
+    dh = get_DH_table()
     
-    # Initialize position vector for end effector
-    pos = np.zeros(3)
-    
-    # Calculate position based on DH parameters (forward kinematics)
-    for i in range(dh_table.shape[0]):
-        theta = dh_table[i][0]
-        d = dh_table[i][1]
-        a = dh_table[i][2]
-        alpha = dh_table[i][3]
-        
-        # Update positions based on current joint parameters
-        pos[0] += a * np.cos(theta)  # X position contribution from a
-        pos[1] += a * np.sin(theta)  # Y position contribution from a
-        pos[2] += d                  # Z position contribution from d
+    # Initialize the final transformation matrix as identity matrix
+    T_final = np.eye(4)
 
+    # Multiply transformation matrices for each joint
+    for joint in dh:
+        theta, d, a, alpha = joint
+        T = dh_transform(theta, d, a, alpha)
+        T_final = np.dot(T_final, T)
+
+    # Extract the position of the end-effector (translation part)
+    pos = T_final[:3, 3]
+    
     return pos
